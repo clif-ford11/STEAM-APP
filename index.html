@@ -1,0 +1,2489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboQuest: Learn Robotics</title>
+    <!-- SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        .intro-banner {
+          width: 100%;
+          height: 800px; /* adjust as needed */
+          background-image: url("image/steam.jpg");
+          background-size: cover;       /* fills the box */
+          background-position: center;  /* keeps focus in the middle */
+          border-radius: 10px;          /* optional rounded edges */
+          margin: 10px 0;               /* space before/after */
+        }
+        
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+          .intro-banner {
+            height: 150px; /* smaller height for tablets/phones */
+          }
+        }
+
+        @media (max-width: 480px) {
+          .intro-banner {
+            height: 120px; /* even smaller for small phones */
+            border-radius: 5px; /* less rounded to save space */
+          }
+        }
+
+        .slide-content {
+          display: flex;           /* places text and image side by side */
+          align-items: center;     /* vertically centers them */
+          gap: 20px;               /* space between text and image */
+        }
+
+        .image-placeholder {
+          width: 300px;            /* set the box size */
+          height: 200px;           
+          overflow: hidden;        /* hides anything outside */
+          border-radius: 10px;     /* optional: rounded corners */
+        }
+
+        .image-placeholder img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;     /* keeps aspect ratio, no stretch */
+        }
+
+        :root {
+            --primary: #6A89CC;
+            --secondary: #F8C291;
+            --accent: #E55039;
+            --warning: #F6B93B;
+            --dark: #4A69BD;
+            --light: #F7F1E3;
+            --space: #CAD3C8;
+            --cyber: #78E08F;
+            --deep-green: #60A3BC;
+            --light-green: #82CCDD;
+            --gold: #FAD390;
+            --pastel-blue: #D6A2E8;
+            --pastel-pink: #FDA7DF;
+            --pastel-green: #C4E538;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--light) 0%, var(--space) 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .game-container {
+            max-width: 100%;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: var(--pastel-blue);
+            border-radius: 50%;
+        }
+        
+        .page {
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
+            border: 2px solid rgba(106, 137, 204, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--cyber), var(--primary), var(--secondary));
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        
+        h1, h2, h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        
+        .intro-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .robot-character {
+            font-size: 8rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 5px 15px rgba(120, 224, 143, 0.3));
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin: 10px 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20px;
+            height: 200%;
+            background: rgba(255,255,255,0.3);
+            transform: rotate(30deg);
+            transition: all 0.6s;
+        }
+        
+        .btn:hover::after {
+            left: 120%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--gold) 100%);
+        }
+        
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent) 0%, #B71540 100%);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #E58E26 100%);
+        }
+        
+        .tabs-container {
+            margin: 20px 0;
+        }
+        
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            background: rgba(248, 194, 145, 0.2);
+            border-radius: 15px;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(248, 194, 145, 0.5);
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-right: 8px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            background: rgba(106, 137, 204, 0.2);
+            color: var(--dark);
+            flex: 1;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(106, 137, 204, 0.2);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .slide-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .text-content {
+            width: 100%;
+            padding: 20px;
+            background: rgba(106, 137, 204, 0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid var(--primary);
+            color: var(--dark);
+            font-weight: normal;
+            text-align: left;
+            line-height: 1.6;
+        }
+        
+        .text-content h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .text-content ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .text-content li {
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+        
+        .quiz-container {
+            margin: 20px 0;
+        }
+        
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(248, 194, 145, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(248, 194, 145, 0.5);
+        }
+        
+        .quiz-tabs {
+            display: flex;
+            overflow-x: auto;
+            background: rgba(248, 194, 145, 0.2);
+            border-radius: 15px;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(248, 194, 145, 0.5);
+        }
+        
+        .quiz-tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-right: 8px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            background: rgba(106, 137, 204, 0.2);
+            color: var(--dark);
+            flex: 1;
+            text-align: center;
+            min-width: 80px;
+        }
+        
+        .quiz-tab.active {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--gold) 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .quiz-content {
+            display: none;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(106, 137, 204, 0.2);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .quiz-content.active {
+            display: block;
+        }
+        
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(106, 137, 204, 0.1);
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .option {
+            display: block;
+            padding: 15px;
+            background: rgba(106, 137, 204, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(106, 137, 204, 0.2);
+            font-weight: 500;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option:hover {
+            background: rgba(106, 137, 204, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .option.selected {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(106, 137, 204, 0.5);
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+        
+        .level-indicator {
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.3rem;
+            text-shadow: 0 0 10px rgba(106, 137, 204, 0.2);
+            animation: pulse 2s infinite;
+        }
+        
+        .mission-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--warning) 0%, var(--gold) 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            margin: 10px 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .boss-battle {
+            background: linear-gradient(135deg, var(--accent) 0%, #B71540 100%);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .completion-message {
+            text-align: center;
+            padding: 40px;
+            background: rgba(248, 194, 145, 0.2);
+            border-radius: 20px;
+            margin: 20px 0;
+            display: none;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px rgba(106, 137, 204, 0.2);
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .completion-message h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(106, 137, 204, 0.2);
+        }
+        
+        .xp-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(248, 194, 145, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(248, 194, 145, 0.5);
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 20px;
+            background: rgba(106, 137, 204, 0.2);
+            border-radius: 10px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--dark));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .xp-label {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .xp-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .achievement {
+            display: flex;
+            align-items: center;
+            background: rgba(248, 194, 145, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            color: var(--warning);
+        }
+        
+        .achievement-text {
+            flex: 1;
+        }
+        
+        .achievement-title {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .stat {
+            padding: 15px;
+            background: rgba(248, 194, 145, 0.2);
+            border-radius: 15px;
+            flex: 1;
+            margin: 0 10px;
+            border: 1px solid rgba(248, 194, 145, 0.5);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+        
+        .mission-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .mission-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            color: var(--secondary);
+        }
+        
+        .mission-title {
+            font-size: 2rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .quiz-progress {
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        /* Grade Selection Page Styles */
+        .grade-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .grade-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(106, 137, 204, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .grade-card.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .grade-card.active h3 {
+            color: white;
+        }
+        
+        .grade-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .grade-card p {
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        
+        .coming-soon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .grade-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 10px;
+            }
+            
+            .page {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+            
+            .robot-character {
+                font-size: 5rem;
+            }
+            
+            .game-stats {
+                flex-direction: column;
+            }
+            
+            .stat {
+                margin: 5px 0;
+            }
+            
+            .mission-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .mission-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .text-content {
+                padding: 15px;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .grade-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="game-container">
+        <!-- Page 1: Introduction -->
+        <div id="page1" class="page active">
+            <div class="intro-container">
+                
+                <!-- Background image banner -->
+                <div class="intro-banner"></div>
+
+                <div class="robot-character">🤖</div>
+                <h1>ROBOQUEST</h1>
+                <p>Embark on an exciting journey to learn robotics and STEAM concepts!</p>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn" onclick="showPage(2)">SELECT GRADE LEVEL</button>
+                    <button class="btn btn-secondary" onclick="showPage(3)" id="continue-btn" style="display:none">CONTINUE LEARNING</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 2: Grade Selection -->
+        <div id="page2" class="page">
+            <div class="intro-container">
+                <h1>SELECT YOUR GRADE LEVEL</h1>
+                <p>Choose your grade to access appropriate robotics content</p>
+                
+                <div class="grade-cards">
+                    <div class="grade-card active" onclick="selectGrade(7)">
+                        <div class="grade-icon">7️⃣</div>
+                        <h3>Grade 7</h3>
+                        <p>Begin your robotics journey with basic concepts and applications</p>
+                        <button class="btn">SELECT GRADE 7</button>
+                    </div>
+                    
+                    <div class="grade-card" onclick="selectGrade(8)">
+                        <div class="grade-icon">8️⃣</div>
+                        <h3>Grade 8</h3>
+                        <p>Intermediate robotics concepts and hands-on projects</p>
+                        <button class="btn" disabled>COMING SOON</button>
+                        <div class="coming-soon">COMING SOON</div>
+                    </div>
+                    
+                    <div class="grade-card" onclick="selectGrade(9)">
+                        <div class="grade-icon">9️⃣</div>
+                        <h3>Grade 9</h3>
+                        <p>Advanced robotics programming and engineering principles</p>
+                        <button class="btn" disabled>COMING SOON</button>
+                        <div class="coming-soon">COMING SOON</div>
+                    </div>
+                    
+                    <div class="grade-card" onclick="selectGrade(10)">
+                        <div class="grade-icon">🔟</div>
+                        <h3>Grade 10</h3>
+                        <p>Complex robotics systems and advanced applications</p>
+                        <button class="btn" disabled>COMING SOON</button>
+                        <div class="coming-soon">COMING SOON</div>
+                    </div>
+                    
+                    <div class="grade-card" onclick="selectGrade(11)">
+                        <div class="grade-icon">1️⃣1️⃣</div>
+                        <h3>Grade 11</h3>
+                        <p>Specialized robotics topics and project development</p>
+                        <button class="btn" disabled>COMING SOON</button>
+                        <div class="coming-soon">COMING SOON</div>
+                    </div>
+                    
+                    <div class="grade-card" onclick="selectGrade(12)">
+                        <div class="grade-icon">1️⃣2️⃣</div>
+                        <h3>Grade 12</h3>
+                        <p>Advanced robotics engineering and career preparation</p>
+                        <button class="btn" disabled>COMING SOON</button>
+                        <div class="coming-soon">COMING SOON</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn" onclick="showPage(1)">BACK TO HOME</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 3: Grade 7 Dashboard -->
+        <div id="page3" class="page">
+            <div class="intro-container">
+                
+                <!-- Background image banner -->
+                <div class="intro-banner"></div>
+
+                <div class="robot-character">🤖</div>
+                <h1>GRADE 7 ROBOTICS</h1>
+                <div class="game-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="player-level">1</div>
+                        <div class="stat-label">PLAYER LEVEL</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="missions-completed">0</div>
+                        <div class="stat-label">MISSIONS COMPLETE</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="bosses-defeated">0</div>
+                        <div class="stat-label">BOSSES DEFEATED</div>
+                    </div>
+                </div>
+                
+                <div class="xp-bar">
+                    <div class="xp-label">EXPERIENCE</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="player-xp"></div>
+                    </div>
+                    <div class="xp-value" id="xp-text">0/100</div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn" onclick="startMission(1)">BEGIN MISSION 1</button>
+                    <button class="btn btn-secondary" onclick="startMission(2)" id="mission2-btn" style="display:none">MISSION 2</button>
+                    <button class="btn btn-accent" onclick="startMission(3)" id="mission3-btn" style="display:none">MISSION 3</button>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn" onclick="showPage(2)">CHANGE GRADE</button>
+                    <button class="btn btn-secondary" onclick="showPage(1)">HOME</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 4: Lesson 1 - Applications of Robotics -->
+        <div id="page4" class="page">
+            <div class="mission-header">
+                <div class="mission-icon">🚀</div>
+                <div class="mission-title">MISSION 1: APPLICATIONS OF ROBOTICS</div>
+            </div>
+            <div class="level-indicator">Learn about robot applications</div>
+            
+            <div class="tabs-container">
+                <div class="tabs">
+                    <div class="tab active" onclick="changeTab(1, 1)">Slide 1</div>
+                    <div class="tab" onclick="changeTab(1, 2)">Slide 2</div>
+                    <div class="tab" onclick="changeTab(1, 3)">Slide 3</div>
+                    <div class="tab" onclick="changeTab(1, 4)">Slide 4</div>
+                    <div class="tab" onclick="changeTab(1, 5)">Slide 5</div>
+                    <div class="tab" onclick="changeTab(1, 6)">Slide 6</div>
+                    <div class="tab" onclick="changeTab(1, 7)">Slide 7</div>
+                    <div class="tab" onclick="changeTab(1, 8)">Slide 8</div>
+                </div>
+                
+                <div class="tab-content active">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>What is a Robot?</h3>
+                            <p>A robot is defined as any machine that is capable of carrying out a complex series of actions automatically, especially one programmable by a computer.</p>
+                            <p>A robot is designed to execute one or more tasks automatically with speed and precision.</p>
+                            <p>A robot can be humanoid in form but in most cases, they do not look like humans.</p>
+                            <p>They come in different types like mobile robots with wheels, flying robots, bipedal robots and many more types.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>What are the applications of robotics?</h3>
+                            <ul>
+                                <li><strong>Automotive Industry</strong> - Assembly, testing, and EV manufacturing</li>
+                                <li><strong>Electronics Manufacturing</strong> - PCB assembly, microchip production, and consumer electronics</li>
+                                <li><strong>Food and Beverage</strong> - Processing, quality control, and service</li>
+                                <li><strong>Warehousing</strong> - Picking, packing, sorting, and 24/7 operations</li>
+                                <li><strong>Space and Ocean Exploration</strong> - Planetary rovers, satellite servicing, deep-sea exploration</li>
+                                <li><strong>Education</strong> - STEM learning, hands-on projects, and programming skills</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>ROBOTICS in Automotive Industry</h3>
+                            <p>Here are some major applications of robotics in the automotive industry:</p>
+                            <h4>Assembly Robots</h4>
+                            <ul>
+                                <li>Assist in assembling components such as engines, transmissions, and electronic systems.</li>
+                                <li>Improve accuracy and reduce assembly time.</li>
+                            </ul>
+                            <h4>Testing and Prototyping Robots</h4>
+                            <ul>
+                                <li>Robots simulate wear-and-tear conditions, crash scenarios, or endurance tests on parts and vehicles.</li>
+                            </ul>
+                            <h4>Car Manufacturing of Electric Vehicles (EVs)</h4>
+                            <ul>
+                                <li>Robotics are vital in battery production, module assembly, and handling sensitive EV components.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>ROBOTICS in Electronics Manufacturing</h3>
+                            <p>In the Electronics Manufacturing Sector, robotics plays a major role in increasing efficiency, precision, and consistency. Here are the key applications:</p>
+                            <h4>Printed Circuit Board (PCB) Assembly</h4>
+                            <ul>
+                                <li>Robots handle precise placement of electronic components on PCBs.</li>
+                                <li>Automated soldering ensures accuracy and reduces defects.</li>
+                            </ul>
+                            <h4>Microchip and Semiconductor Manufacturing</h4>
+                            <ul>
+                                <li>Robotics assists in wafer handling, lithography, and packaging.</li>
+                                <li>Cleanroom robots minimize contamination and increase yield.</li>
+                            </ul>
+                            <h4>Assembly of Consumer Electronics</h4>
+                            <ul>
+                                <li>Robots assemble parts of smartphones, laptops, televisions, and appliances.</li>
+                                <li>Enables miniaturization and high-volume production.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>ROBOTICS in Food and Beverage Industry</h3>
+                            <p>Robotics is increasingly being applied in the Food and Beverage (F&B) Industry to improve efficiency, safety, and quality. Here are the main applications:</p>
+                            <h4>Food Processing and Preparation</h4>
+                            <ul>
+                                <li>Cutting, slicing, peeling, and sorting fruits, vegetables, and meat.</li>
+                                <li>Mixing, blending, and portioning ingredients with precision.</li>
+                                <li>Automated cooking systems (e.g., robotic chefs, pizza-making robots).</li>
+                            </ul>
+                            <h4>Quality Control and Inspection</h4>
+                            <ul>
+                                <li>Vision-guided robots check product size, shape, and defects.</li>
+                                <li>Detecting contamination or packaging errors using sensors and AI.</li>
+                            </ul>
+                            <h4>Food Delivery and Service</h4>
+                            <ul>
+                                <li>Automated serving robots in fast-food chains.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>ROBOTICS in Warehouses</h3>
+                            <p>Here are the <strong>applications of robotics in warehouses:</strong></p>
+                            <h4>Automated Picking and Packing</h4>
+                            <ul>
+                                <li>Robots equipped with vision systems and grippers can identify, pick, and pack items with speed and precision.</li>
+                            </ul>
+                            <h4>Sorting Systems</h4>
+                            <ul>
+                                <li>Robotics systems can sort products by size, weight, or destination, making order fulfillment faster and more accurate.</li>
+                            </ul>
+                            <h4>24/7 Operation</h4>
+                            <ul>
+                                <li>Robots can operate continuously without fatigue, allowing warehouses to meet high demand efficiently.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>ROBOTICS in Space and Ocean Exploration</h3>
+                            <p>Here are the key <strong>applications of robotics under Space and Ocean Exploration</strong>:</p>
+                            <h4>Space Exploration</h4>
+                            <ul>
+                                <li><strong>Planetary Rovers</strong> – Robots like NASA's <em>Curiosity</em> and <em>Perseverance</em> explore Mars, analyze soil samples, search for signs of life, and send data back to Earth.</li>
+                                <li><strong>Satellite Servicing</strong> – Robotic arms (e.g., <em>Canadarm2</em> on the International Space Station) are used to repair, maintain, and refuel satellites.</li>
+                            </ul>
+                            <h4>Ocean Exploration</h4>
+                            <ul>
+                                <li><strong>Deep-Sea Exploration</strong> – Robots can withstand high pressures, exploring trenches and hydrothermal vents unreachable by humans.</li>
+                                <li><strong>Search and Rescue</strong> – Used in underwater missions to recover lost objects or assist in disaster investigations (e.g., plane crashes at sea).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>Applications of Robotics in Education</h3>
+                            <p>Using Ultimate 2.0 (10-in-1 Robot Kit):</p>
+                            <h4>STEM Education Integration</h4>
+                            <ul>
+                                <li>Enhances understanding of Science, Technology, Engineering, and Mathematics concepts through building and programming different robot models.</li>
+                                <li>Helps students apply theoretical knowledge to practical projects.</li>
+                            </ul>
+                            <h4>Hands-On Learning & Creativity</h4>
+                            <ul>
+                                <li>Students can design and build up to <strong>10 different robot forms</strong> (e.g., Robotic Arm Tank, Camera Dolly, Catapult).</li>
+                                <li>Encourages creativity, innovation, and problem-solving as learners modify or even create new robot designs.</li>
+                            </ul>
+                            <h4>Programming Skills Development</h4>
+                            <ul>
+                                <li>Teaches <strong>block-based programming (mBlock)</strong> for beginners and <strong>Python/Arduino (C++)</strong> for advanced learners.</li>
+                                <li>Builds computational thinking and logical reasoning through coding challenges.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="navigation">
+                <button class="btn" onclick="showPage(3)">GRADE 7 DASHBOARD</button>
+                <button class="btn btn-secondary" id="next-btn1" onclick="nextSlide(1)">NEXT</button>
+                <button class="btn btn-accent boss-battle" id="boss-btn1" style="display:none" onclick="startBossBattle(1)">BOSS BATTLE</button>
+            </div>
+        </div>
+
+        <!-- Page 5: Quiz Easy -->
+        <div id="page5" class="page">
+            <div class="quiz-header">
+                <h1>BOSS BATTLE: EASY LEVEL</h1>
+                <div class="mission-badge">ROBOT KNOWLEDGE TEST</div>
+            </div>
+            
+            <div class="quiz-progress" id="quiz1-progress">Question 1 of 10</div>
+            
+            <div class="quiz-container">
+                <div class="quiz-tabs">
+                    <div class="quiz-tab active" onclick="changeQuizTab(1, 1)">Q1</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(1, 2)">Q2</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(1, 3)">Q3</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(1, 4)">Q4</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(1, 5)">Q5</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(1, 6)">Q6</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(1, 7)">Q7</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(1, 8)">Q8</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(1, 9)">Q9</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(1, 10)">Q10</div>
+                </div>
+                
+                <!-- Quiz content from easy.docx -->
+                <div class="quiz-content active">
+                    <div class="question">1. Which of the following best defines a robot?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 1, 1)">A. A machine that looks like a human</div>
+                        <div class="option" onclick="selectOption(this, 1, 1)">B. Any machine that automatically carries out tasks when controlled by humans</div>
+                        <div class="option" onclick="selectOption(this, 1, 1)">C. A programmable machine capable of executing tasks automatically with speed and precision</div>
+                        <div class="option" onclick="selectOption(this, 1, 1)">D. A tool that only works when manually operated</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">2. Which of the following is NOT a type of robot?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 1, 2)">A. Mobile robots with wheels</div>
+                        <div class="option" onclick="selectOption(this, 1, 2)">B. Flying robots</div>
+                        <div class="option" onclick="selectOption(this, 1, 2)">C. Bipedal robots</div>
+                        <div class="option" onclick="selectOption(this, 1, 2)">D. Static humans</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">3. Why are assembly robots important in the automotive industry?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 1, 3)">A. They make cars look stylish</div>
+                        <div class="option" onclick="selectOption(this, 1, 3)">B. They improve accuracy and reduce assembly time</div>
+                        <div class="option" onclick="selectOption(this, 1, 3)">C. They entertain workers in the factory</div>
+                        <div class="option" onclick="selectOption(this, 1, 3)">D. They replace the need for quality checks</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">4. A factory needs to place thousands of small components onto printed circuit boards (PCBs) with extreme accuracy. Which robotic application would best fit this task?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 1, 4)">A. Microchip packaging</div>
+                        <div class="option" onclick="selectOption(this, 1, 4)">B. Automated soldering</div>
+                        <div class="option" onclick="selectOption(this, 1, 4)">C. PCB Assembly</div>
+                        <div class="option" onclick="selectOption(this, 1, 4)">D. Vision inspection</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">5. A food company wants to ensure every packaged product has the same weight and no contamination. Which robotic function would be MOST important?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 1, 5)">A. Food preparation</div>
+                        <div class="option" onclick="selectOption(this, 1, 5)">B. Automated cooking</div>
+                        <div class="option" onclick="selectOption(this, 1, 5)">C. Quality control and inspection</div>
+                        <div class="option" onclick="selectOption(this, 1, 5)">D. Food delivery service</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">6. One of the main advantages of robots in warehouses is that they can:</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 1, 6)">A. Sort products by color only</div>
+                        <div class="option" onclick="selectOption(this, 1, 6)">B. Operate continuously without fatigue</div>
+                        <div class="option" onclick="selectOption(this, 1, 6)">C. Deliver packages to customers' homes</div>
+                        <div class="option" onclick="selectOption(this, 1, 6)">D. Replace all human workers</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">7. NASA's Perseverance rover on Mars is mainly used to:</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 1, 7)">A. Refuel satellites in orbit</div>
+                        <div class="option" onclick="selectOption(this, 1, 7)">B. Explore deep-sea hydrothermal vents</div>
+                        <div class="option" onclick="selectOption(this, 1, 7)">C. Analyze soil samples and search for signs of life</div>
+                        <div class="option" onclick="selectOption(this, 1, 7)">D. Transport astronauts between planets</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">8. A student uses the Ultimate 2.0 kit to build a robotic arm tank that can pick up small objects. What learning benefit is MOST emphasized in this activity?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 1, 8)">A. Improving handwriting skills</div>
+                        <div class="option" onclick="selectOption(this, 1, 8)">B. Developing programming, problem-solving, and engineering skills</div>
+                        <div class="option" onclick="selectOption(this, 1, 8)">C. Memorizing robotics history</div>
+                        <div class="option" onclick="selectOption(this, 1, 8)">D. Practicing manual drawing of circuits</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">9. Which industry would MOST likely use robots for high-precision soldering of delicate parts?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 1, 9)">A. Food and Beverage</div>
+                        <div class="option" onclick="selectOption(this, 1, 9)">B. Automotive</div>
+                        <div class="option" onclick="selectOption(this, 1, 9)">C. Electronics</div>
+                        <div class="option" onclick="selectOption(this, 1, 9)">D. Ocean Exploration</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">10. If a warehouse robot breaks down during peak hours, what is the BEST solution to maintain efficiency?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 1, 10)">A. Wait until the next day for repairs</div>
+                        <div class="option" onclick="selectOption(this, 1, 10)">B. Replace the robot immediately with a backup unit</div>
+                        <div class="option" onclick="selectOption(this, 1, 10)">C. Stop operations until the robot is fixed</div>
+                        <div class="option" onclick="selectOption(this, 1, 10)">D. Ask workers to ignore the robot and keep going</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn" onclick="showPage(4)">BACK TO LESSON</button>
+                <button class="btn btn-secondary" id="quiz1-next" onclick="nextQuizQuestion(1)">NEXT QUESTION</button>
+                <button class="btn btn-accent" id="quiz1-submit" style="display:none" onclick="checkQuiz(1)">DEFEAT BOSS</button>
+            </div>
+            
+            <div class="completion-message" id="quiz1-complete">
+                <h2 id="quiz1-result">VICTORY! BOSS DEFEATED!</h2>
+                <p id="quiz1-message">You've successfully completed the first boss battle!</p>
+                
+                <div class="achievement" id="quiz1-achievement">
+                    <div class="achievement-icon">🏆</div>
+                    <div class="achievement-text">
+                        <div class="achievement-title">First Blood</div>
+                        <div>Completed your first quiz battle</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn btn-secondary" onclick="completeMission(1)">CONTINUE TO NEXT MISSION</button>
+                    <button class="btn" onclick="showPage(4)" id="quiz1-retry" style="display:none">RETRY LESSON</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 6: Lesson 2 - Fundamentals of Robotics -->
+        <div id="page6" class="page">
+            <div class="mission-header">
+                <div class="mission-icon">🔧</div>
+                <div class="mission-title">MISSION 2: ROBOT FUNDAMENTALS</div>
+            </div>
+            <div class="level-indicator">Learn robot components and functions</div>
+            
+            <div class="tabs-container">
+                <div class="tabs">
+                    <div class="tab active" onclick="changeTab(2, 1)">Slide 1</div>
+                    <div class="tab" onclick="changeTab(2, 2)">Slide 2</div>
+                    <div class="tab" onclick="changeTab(2, 3)">Slide 3</div>
+                    <div class="tab" onclick="changeTab(2, 4)">Slide 4</div>
+                    <div class="tab" onclick="changeTab(2, 5)">Slide 5</div>
+                    <div class="tab" onclick="changeTab(2, 6)">Slide 6</div>
+                    <div class="tab" onclick="changeTab(2, 7)">Slide 7</div>
+                </div>
+                
+                <div class="tab-content active">
+                    <div class="slide-content">
+                      <div class="text-content">
+                            <h3>Robot Components - Set 1</h3>
+                            <p>These are the essential components for building a basic robot:</p>
+                            <ul>
+                                <li>Mainboard mCore (1)</li>
+                                <li>Chassis (1)</li>
+                                <li>Ultrasonic Sensor (1)</li>
+                                <li>Line-follower Sensor (1)</li>
+                            </ul>
+                            <p>The mCore mainboard acts as the robot's brain, while the sensors allow it to perceive its environment.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                      <div class="text-content">
+                            <h3>Robot Components - Set 2</h3>
+                            <p>Motion and assembly components for your robot:</p>
+                            <ul>
+                                <li>Motor (2)</li>
+                                <li>Mini Wheel (1)</li>
+                                <li>Wheel (2)</li>
+                                <li>Screwdriver (1)</li>
+                            </ul>
+                            <p>Motors provide movement, wheels enable mobility, and the screwdriver helps with assembly.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                      <div class="text-content">
+                            <h3>Robot Components - Set 3</h3>
+                            <p>Connection and structural components:</p>
+                            <ul>
+                                <li>RJ25 Cable (2)</li>
+                                <li>USB Cable (1)</li>
+                                <li>M4*25mm Brass Stud (4)</li>
+                                <li>M3*25mm Screw (6)</li>
+                            </ul>
+                            <p>Cables enable communication and power transfer, while screws and studs provide structural integrity.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                      <div class="text-content">
+                            <h3>Robot Components - Set 4</h3>
+                            <p>Additional hardware and control components:</p>
+                            <ul>
+                                <li>M4*8mm Screw (15)</li>
+                                <li>M2.2*9mm Self-drilling Screw (4)</li>
+                                <li>M3 Nut (8)</li>
+                                <li>Infrared Remote Controller (1)</li>
+                            </ul>
+                            <p>These components help secure parts together and provide remote control capability.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                      <div class="text-content">
+                            <h3>Robot Components - Set 5</h3>
+                            <p>Power and accessory components:</p>
+                            <ul>
+                                <li>AA Battery Holder (1)</li>
+                                <li>Line-follower Map (1)</li>
+                                <li>Velcro sticker pad (2)</li>
+                                <li>Mini Screwdriver (1)</li>
+                            </ul>
+                            <p>The battery holder provides power, while other components assist with testing and assembly.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                      <div class="text-content">
+                            <h3>Main Parts of a Robot</h3>
+                            <p>All robots consist of several key components that work together:</p>
+                            <ul>
+                                <li><strong>Power Supply:</strong> Provides energy for all operations</li>
+                                <li><strong>Controller (CPU):</strong> The brain that processes instructions</li>
+                                <li><strong>Sensors:</strong> Gather data from the environment (IR, ultrasonic, temperature, motion, etc.)</li>
+                                <li><strong>Actuators:</strong> Produce outputs (motors, lights, etc.)</li>
+                                <li><strong>Program:</strong> Instructions that define robot behavior</li>
+                            </ul>
+                            <p>These components work together to enable the robot to perceive, process, and act upon its environment.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                      <div class="text-content">
+                            <h3>Robot Components in Action</h3>
+                            <p>Let's examine how these components work together using the mBot 2.0 as an example:</p>
+                            
+                            <div class="component-explanation">
+                                <div class="component-item">
+                                    <h4>Main Controller</h4>
+                                    <p>Acts as the brain of the robot. All data from sensors are processed and all actions are controlled by it.</p>
+                                </div>
+                                
+                                <div class="component-item">
+                                    <h4>Mechanical Parts</h4>
+                                    <p>Provide structure and support to the robot. Some mechanical parts are called end-effectors.</p>
+                                </div>
+                                
+                                <div class="component-item">
+                                    <h4>Power Source</h4>
+                                    <p>Supplies energy to all electronic components in the robot.</p>
+                                </div>
+                                
+                                <div class="component-item">
+                                    <h4>Sensors</h4>
+                                    <p>Act as the data gatherers of the robot, similar to human senses.</p>
+                                </div>
+                                
+                                <div class="component-item">
+                                    <h4>Actuators</h4>
+                                    <p>Convert controller commands into real-world outputs like movement, sounds, and lights.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn" onclick="showPage(3)">GRADE 7 DASHBOARD</button>
+                <button class="btn btn-secondary" id="next-btn2" onclick="nextSlide(2)">NEXT</button>
+                <button class="btn btn-accent boss-battle" id="boss-btn2" style="display:none" onclick="startBossBattle(2)">BOSS BATTLE</button>
+            </div>
+        </div> 
+
+        <!-- Page 7: Quiz Average -->
+        <div id="page7" class="page">
+            <div class="quiz-header">
+                <h1>BOSS BATTLE: AVERAGE LEVEL</h1>
+                <div class="mission-badge">ROBOT COMPONENTS TEST</div>
+            </div>
+            
+            <div class="quiz-progress" id="quiz2-progress">Question 1 of 10</div>
+            
+            <div class="quiz-container">
+                <div class="quiz-tabs">
+                    <div class="quiz-tab active" onclick="changeQuizTab(2, 1)">Q1</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(2, 2)">Q2</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(2, 3)">Q3</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(2, 4)">Q4</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(2, 5)">Q5</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(2, 6)">Q6</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(2, 7)">Q7</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(2, 8)">Q8</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(2, 9)">Q9</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(2, 10)">Q10</div>
+                </div>
+                
+                <!-- Quiz content from average.docx -->
+                <div class="quiz-content active">
+                    <div class="question">1. Which component provides energy for all parts of the robot to function?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 2, 1)">A. Sensors</div>
+                        <div class="option" onclick="selectOption(this, 2, 1)">B. Power Supply</div>
+                        <div class="option" onclick="selectOption(this, 2, 1)">C. Main Controller (CPU)</div>
+                        <div class="option" onclick="selectOption(this, 2, 1)">D. Program</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">2. What is the main role of sensors in a robot?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 2, 2)">A. To control motors and lights</div>
+                        <div class="option" onclick="selectOption(this, 2, 2)">B. To supply power to the CPU</div>
+                        <div class="option" onclick="selectOption(this, 2, 2)">C. To detect environmental changes and send data to the CPU</div>
+                        <div class="option" onclick="selectOption(this, 2, 2)">D. To execute instructions directly from the program</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">3. If a robot detects motion and then turns on its buzzer, which is the correct order of information flow?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 2, 3)">A. CPU → Program → Actuator → Sensor</div>
+                        <div class="option" onclick="selectOption(this, 2, 3)">B. Sensor → CPU → Actuator</div>
+                        <div class="option" onclick="selectOption(this, 2, 3)">C. Power Supply → Actuator → CPU</div>
+                        <div class="option" onclick="selectOption(this, 2, 3)">D. Program → Actuator → Sensor</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">4. A robot has sensors and actuators working correctly, but it does not respond to instructions. Which part is MOST likely malfunctioning?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 2, 4)">A. Program</div>
+                        <div class="option" onclick="selectOption(this, 2, 4)">B. CPU (Main Controller)</div>
+                        <div class="option" onclick="selectOption(this, 2, 4)">C. Power Supply</div>
+                        <div class="option" onclick="selectOption(this, 2, 4)">D. Lights</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">5. A student forgets to upload the program to the robot. What will most likely happen?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 2, 5)">A. The robot will still function normally using its sensors.</div>
+                        <div class="option" onclick="selectOption(this, 2, 5)">B. The actuators will move randomly without purpose.</div>
+                        <div class="option" onclick="selectOption(this, 2, 5)">C. The CPU will not have instructions to process, so the robot will not work properly.</div>
+                        <div class="option" onclick="selectOption(this, 2, 5)">D. The power supply will stop providing energy.</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">6. What is referred to as the "brain" of the robot?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 2, 6)">A. Sensors</div>
+                        <div class="option" onclick="selectOption(this, 2, 6)">B. Main Controller</div>
+                        <div class="option" onclick="selectOption(this, 2, 6)">C. Actuators</div>
+                        <div class="option" onclick="selectOption(this, 2, 6)">D. Power Source</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">7. The sensors of a robot are compared to which part of the human body?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 2, 7)">A. Muscles</div>
+                        <div class="option" onclick="selectOption(this, 2, 7)">B. Skeleton</div>
+                        <div class="option" onclick="selectOption(this, 2, 7)">C. Five senses</div>
+                        <div class="option" onclick="selectOption(this, 2, 7)">D. Brain</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">8. If a robot's ultrasonic sensor detects an obstacle, which part is responsible for deciding how the robot should respond?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 2, 8)">A. Sensors</div>
+                        <div class="option" onclick="selectOption(this, 2, 8)">B. Main Controller</div>
+                        <div class="option" onclick="selectOption(this, 2, 8)">C. Actuators</div>
+                        <div class="option" onclick="selectOption(this, 2, 8)">D. End-effectors</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">9. A robot has working sensors and actuators but does not move or respond. Which part is MOST likely the problem?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 2, 9)">A. Main Controller</div>
+                        <div class="option" onclick="selectOption(this, 2, 9)">B. Power Supply</div>
+                        <div class="option" onclick="selectOption(this, 2, 9)">C. Sensors</div>
+                        <div class="option" onclick="selectOption(this, 2, 9)">D. End-effectors</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">10. Why does a robot need actuators in addition to sensors and a main controller?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 2, 10)">A. To process data collected by sensors</div>
+                        <div class="option" onclick="selectOption(this, 2, 10)">B. To convert commands into real-world actions like movement, sound, and lights</div>
+                        <div class="option" onclick="selectOption(this, 2, 10)">C. To provide energy for the system</div>
+                        <div class="option" onclick="selectOption(this, 2, 10)">D. To act as a power backup for the controller</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn" onclick="showPage(6)">BACK TO LESSON</button>
+                <button class="btn btn-secondary" id="quiz2-next" onclick="nextQuizQuestion(2)">NEXT QUESTION</button>
+                <button class="btn btn-accent" id="quiz2-submit" style="display:none" onclick="checkQuiz(2)">DEFEAT BOSS</button>
+            </div>
+            
+            <div class="completion-message" id="quiz2-complete">
+                <h2 id="quiz2-result">VICTORY! BOSS DEFEATED!</h2>
+                <p id="quiz2-message">You've successfully completed the second boss battle!</p>
+                
+                <div class="achievement" id="quiz2-achievement">
+                    <div class="achievement-icon">⭐</div>
+                    <div class="achievement-text">
+                        <div class="achievement-title">Component Master</div>
+                        <div>Learned all about robot components</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn btn-secondary" onclick="completeMission(2)">CONTINUE TO NEXT MISSION</button>
+                    <button class="btn" onclick="showPage(6)" id="quiz2-retry" style="display:none">RETRY LESSON</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 8: Lesson 3 - Assembling Robotics Kits -->
+        <div id="page8" class="page">
+            <div class="mission-header">
+                <div class="mission-icon">🔩</div>
+                <div class="mission-title">MISSION 3: ROBOT ASSEMBLY</div>
+            </div>
+            <div class="level-indicator">Learn about robot assembly and kits</div>
+            
+            <div class="tabs-container">
+                <div class="tabs">
+                    <div class="tab active" onclick="changeTab(3, 1)">Slide 1</div>
+                    <div class="tab" onclick="changeTab(3, 2)">Slide 2</div>
+                    <div class="tab" onclick="changeTab(3, 3)">Slide 3</div>
+                    <div class="tab" onclick="changeTab(3, 4)">Slide 4</div>
+                    <div class="tab" onclick="changeTab(3, 5)">Slide 5</div>
+                    <div class="tab" onclick="changeTab(3, 6)">Slide 6</div>
+                    <div class="tab" onclick="changeTab(3, 7)">Slide 7</div>
+                    <div class="tab" onclick="changeTab(3, 8)">Slide 8</div>
+                    <div class="tab" onclick="changeTab(3, 9)">Slide 9</div>
+                    <div class="tab" onclick="changeTab(3, 10)">Slide 10</div>
+                    <div class="tab" onclick="changeTab(3, 11)">Slide 11</div>
+                    <div class="tab" onclick="changeTab(3, 12)">Slide 12</div>
+                    <div class="tab" onclick="changeTab(3, 13)">Slide 13</div>
+                    <div class="tab" onclick="changeTab(3, 14)">Slide 14</div>
+                    <div class="tab" onclick="changeTab(3, 15)">Slide 15</div>
+                    <div class="tab" onclick="changeTab(3, 16)">Slide 16</div>
+                </div>
+                
+                <div class="tab-content active">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>Ten Forms of Ultimate 2.0</h3>
+                            <p>The Ultimate 2.0 robotics kit is incredibly versatile, allowing you to build ten different robot configurations:</p>
+                            <ol>
+                                <li>Robotic Arm Tank</li>
+                                <li>Beverage Robot</li>
+                                <li>Camera Dolly</li>
+                                <li>3D Capture A</li>
+                                <li>3D Capture B</li>
+                                <li>Detecting Robot</li>
+                                <li>Rolling Tank</li>
+                                <li>Self-Balancing Robot</li>
+                                <li>Robotic Ant</li>
+                                <li>Catapult Ram</li>
+                            </ol>
+                            <p>Each form has unique capabilities and applications, demonstrating the flexibility of the Ultimate 2.0 kit.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>1. Robotic Arm Tank</h3>
+                            <p>The Robotic Arm Tank combines a highly adaptable track chassis with a flexible robotic arm.</p>
+                            <p><strong>Capabilities:</strong></p>
+                            <ul>
+                                <li>Grip, lift, and deliver objects</li>
+                                <li>Navigate various terrains</li>
+                                <li>Perform manipulation tasks in challenging environments</li>
+                            </ul>
+                            <p>This configuration is ideal for object retrieval and manipulation in uneven or difficult terrain where wheeled robots might struggle.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>2. Beverage Robot</h3>
+                            <p>The Beverage Robot features a mobile chassis, variable angle support structure, and self-adaptive bracket.</p>
+                            <p><strong>Capabilities:</strong></p>
+                            <ul>
+                                <li>Independently pour beverages into glasses</li>
+                                <li>Deliver drinks to specific locations</li>
+                                <li>Perform similar liquid transfer tasks</li>
+                            </ul>
+                            <p>This robot demonstrates practical applications in service robotics and automated delivery systems.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>3. Camera Dolly</h3>
+                            <p>The Camera Dolly consists of a mobile chassis and 360-degree swivel base for creative filming applications.</p>
+                            <p><strong>Capabilities:</strong></p>
+                            <ul>
+                                <li>Low-angle filming with smartphones or cameras</li>
+                                <li>Preset path following for consistent shots</li>
+                                <li>Motion-based cinematography</li>
+                            </ul>
+                            <p><strong>Note:</strong> Motion noise may affect sound recording, so this is best for visual capture.</p>
+                            <p>Perfect for capturing dynamic shots and creating professional-looking video content.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>4. 3D Capture A</h3>
+                            <p>3D Capture A is a simple yet powerful 360-degree rotating platform for panoramic imaging.</p>
+                            <p><strong>Capabilities:</strong></p>
+                            <ul>
+                                <li>360-degree panoramic filming</li>
+                                <li>Mobile filming around small objects</li>
+                                <li>3D scanning simulation with compatible apps</li>
+                            </ul>
+                            <p>This configuration keeps the camera stable while rotating objects, ideal for product photography and scanning applications.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>5. 3D Capture B</h3>
+                            <p>3D Capture B also creates 360-degree imagery but uses a different approach than 3D Capture A.</p>
+                            <p><strong>Key Difference:</strong></p>
+                            <ul>
+                                <li>Rotates objects while keeping the smartphone stable</li>
+                                <li>Creates animated rotating pictures with Arqspin software</li>
+                                <li>Produces 3D-effect images</li>
+                            </ul>
+                            <p>This method is particularly effective for creating engaging product displays and interactive visual content.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>6. Detecting Robot</h3>
+                            <p>The Detecting Robot is a tracked vehicle equipped with multiple sensors for autonomous operation.</p>
+                            <p><strong>Features:</strong></p>
+                            <ul>
+                                <li>Line-following sensor and ultrasonic sensor</li>
+                                <li>App-controlled operation</li>
+                                <li>Three operating modes: manual, line-following, and obstacle-avoidance</li>
+                                <li>Excellent off-road performance</li>
+                            </ul>
+                            <p>This versatile robot can navigate sand, rugged terrain, and structured environments with equal capability.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>7. Rolling Tank</h3>
+                            <p>The Rolling Tank is an innovative robot that moves by rolling over in a unique locomotion pattern.</p>
+                            <p><strong>Unique Capability:</strong></p>
+                            <ul>
+                                <li>Can roll over when hitting obstacles</li>
+                                <li>Continues moving after overcoming obstacles</li>
+                                <li>Unconventional movement pattern for challenging terrain</li>
+                            </ul>
+                            <p>This design demonstrates alternative mobility solutions that can overcome obstacles that would stop conventional robots.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>8. Self-Balancing Robot</h3>
+                            <p>The Self-Balancing Robot uses two encoder motors to maintain balance while moving.</p>
+                            <p><strong>Capabilities:</strong></p>
+                            <ul>
+                                <li>Maintains balance on two wheels</li>
+                                <li>Moves forward and backward autonomously</li>
+                                <li>Demonstrates principles of dynamic stability</li>
+                            </ul>
+                            <p>This configuration illustrates advanced control systems that maintain equilibrium, similar to segways and other self-balancing vehicles.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>9. Robotic Ant</h3>
+                            <p>The Robotic Ant is a hexapod robot that simulates insect movement using link mechanisms.</p>
+                            <p><strong>Features:</strong></p>
+                            <ul>
+                                <li>Six-legged design for stability</li>
+                                <li>Link mechanisms for realistic ant-like movement</li>
+                                <li>Two motor drivers for coordinated motion</li>
+                                <li>Moves forward, backward, and turns freely</li>
+                            </ul>
+                            <p>This bio-inspired robot demonstrates how mechanical systems can replicate natural locomotion patterns.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>10. Catapult Ram</h3>
+                            <p>The Catapult Ram is an adjustable table tennis catapult for launching objects.</p>
+                            <p><strong>Mechanism:</strong></p>
+                            <ul>
+                                <li>One motor tensions rubber bands with connecting rods</li>
+                                <li>Another motor changes catapult direction with gear drive</li>
+                                <li>Adjustable launch parameters</li>
+                            </ul>
+                            <p>This robot demonstrates principles of projectile motion and mechanical energy transfer in an engaging, interactive way.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>Parts of Ultimate 2.0</h3>
+                            <p>The Ultimate 2.0 kit contains various electronic and mechanical components that enable its diverse forms.</p>
+                            <p><strong>Key Components:</strong></p>
+                            <ul>
+                                <li>Main Controller - The brain of the robot</li>
+                                <li>Gyro Sensor - Detects balance and orientation</li>
+                                <li>Line Follower - Detects black lines and dark surfaces</li>
+                                <li>Ultrasonic Sensor - Detects obstacles</li>
+                                <li>Motor Driver - Controls encoder motors</li>
+                                <li>Encoder Motor - Provides precise movement control</li>
+                                <li>Gripper - Manipulates objects</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>Electronic Modules</h3>
+                            <p>The electronic components form the control and sensing systems of the Ultimate 2.0 robot.</p>
+                            <p><strong>Main Controller:</strong></p>
+                            <ul>
+                                <li>Controls all robot processes</li>
+                                <li>Connects input devices (sensors) and output devices (motors)</li>
+                                <li>Processes data and executes programmed behaviors</li>
+                            </ul>
+                            <p><strong>Sensors and Actuators:</strong></p>
+                            <ul>
+                                <li>Gyro Sensor: Detects balance and orientation changes</li>
+                                <li>Line Follower: Identifies path markings for navigation</li>
+                                <li>Ultrasonic Sensor: Measures distance to obstacles</li>
+                                <li>Encoder Motor: Provides precise movement with feedback</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>Assembling mBot and Ultimate 2.0</h3>
+                            <p>Proper assembly is crucial for robot performance and functionality.</p>
+                            <p><strong>Assembly Guidelines:</strong></p>
+                            <ul>
+                                <li>Refer to the printed assembly manual for step-by-step instructions</li>
+                                <li>Organize components before beginning assembly</li>
+                                <li>Follow the specific sequence for each robot form</li>
+                                <li>Ensure all connections are secure but not over-tightened</li>
+                                <li>Test each subsystem as you assemble</li>
+                            </ul>
+                            <p>The assembly process itself teaches valuable engineering and problem-solving skills.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>Testing Your Robot</h3>
+                            <p>mBot comes with pre-programmed modes for immediate testing and operation.</p>
+                            <p><strong>Pre-programmed Modes:</strong></p>
+                            <ul>
+                                <li><strong>Mode 1 (Default):</strong> Mobile device control using apps (White LED Lights)</li>
+                                <li><strong>Mode 2 (Obstacle Avoidance):</strong> Press onboard button once (Green LED Lights)</li>
+                                <li><strong>Mode 3 (Line Following):</strong> Press onboard button twice (Blue LED Lights)</li>
+                            </ul>
+                            <p><strong>Testing Considerations:</strong></p>
+                            <ul>
+                                <li>Verify obstacle detection with ultrasonic sensor</li>
+                                <li>Test line following on appropriate surfaces</li>
+                                <li>Check motor operation and responsiveness</li>
+                                <li>Confirm all sensors are functioning correctly</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="slide-content">
+                        <div class="text-content">
+                            <h3>Creative Applications</h3>
+                            <p>Once you've mastered the basic forms, you can create custom robot configurations.</p>
+                            <p><strong>Expansion Possibilities:</strong></p>
+                            <ul>
+                                <li>Combine features from different robot forms</li>
+                                <li>Design custom attachments for specific tasks</li>
+                                <li>Program unique behaviors using mBlock software</li>
+                                <li>Integrate additional sensors or components</li>
+                                <li>Create robots for specific challenges or competitions</li>
+                            </ul>
+                            <p>The Ultimate 2.0 platform provides endless opportunities for creativity and innovation in robotics.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn" onclick="showPage(3)">GRADE 7 DASHBOARD</button>
+                <button class="btn btn-secondary" id="next-btn3" onclick="nextSlide(3)">NEXT</button>
+                <button class="btn btn-accent boss-battle" id="boss-btn3" style="display:none" onclick="startBossBattle(3)">FINAL BOSS BATTLE</button>
+            </div>
+        </div>
+
+        <!-- Page 9: Quiz Difficult -->
+        <div id="page9" class="page">
+            <div class="quiz-header">
+                <h1>FINAL BOSS BATTLE: DIFFICULT LEVEL</h1>
+                <div class="mission-badge">ROBOT ASSEMBLY TEST</div>
+            </div>
+            
+            <div class="quiz-progress" id="quiz3-progress">Question 1 of 10</div>
+            
+            <div class="quiz-container">
+                <div class="quiz-tabs">
+                    <div class="quiz-tab active" onclick="changeQuizTab(3, 1)">Q1</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(3, 2)">Q2</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(3, 3)">Q3</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(3, 4)">Q4</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(3, 5)">Q5</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(3, 6)">Q6</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(3, 7)">Q7</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(3, 8)">Q8</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(3, 9)">Q9</div>
+                    <div class="quiz-tab" onclick="changeQuizTab(3, 10)">Q10</div>
+                </div>
+                
+                <!-- Quiz content from difficult.docx -->
+                <div class="quiz-content active">
+                    <div class="question">1. Which robot is designed with a flexible arm that can grip, lift, and deliver objects?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 3, 1)">A. Beverage Robot</div>
+                        <div class="option" onclick="selectOption(this, 3, 1)">B. Robotic Arm Tank</div>
+                        <div class="option" onclick="selectOption(this, 3, 1)">C. Rolling Tank</div>
+                        <div class="option" onclick="selectOption(this, 3, 1)">D. Robotic Ant</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">2. What feature makes the Beverage Robot unique compared to the others?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 3, 2)">A. It balances itself while moving.</div>
+                        <div class="option" onclick="selectOption(this, 3, 2)">B. It pours liquid into a glass and delivers it.</div>
+                        <div class="option" onclick="selectOption(this, 3, 2)">C. It rolls over when it hits an obstacle.</div>
+                        <div class="option" onclick="selectOption(this, 3, 2)">D. It launches objects with rubber bands.</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">3. A film student wants to capture smooth, low-angle shots with their phone and follow a preset path. Which robot would be most suitable?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 3, 3)">A. Camera Dolly</div>
+                        <div class="option" onclick="selectOption(this, 3, 3)">B. Detecting Robot</div>
+                        <div class="option" onclick="selectOption(this, 3, 3)">C. Robotic Ant</div>
+                        <div class="option" onclick="selectOption(this, 3, 3)">D. Self-Balancing Robot</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">4. Both 3D Capture A and 3D Capture B can create 360-degree views. How does 3D Capture B differ?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 3, 4)">A. It rotates the camera while the object stays still.</div>
+                        <div class="option" onclick="selectOption(this, 3, 4)">B. It rotates the object while keeping the camera stable.</div>
+                        <div class="option" onclick="selectOption(this, 3, 4)">C. It cannot connect with apps.</div>
+                        <div class="option" onclick="selectOption(this, 3, 4)">D. It works only with video cameras, not cell phones.</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">5. A company wants a robot that can patrol rough terrain and avoid obstacles using sensors. Which robot should they choose?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 3, 5)">A. Detecting Robot</div>
+                        <div class="option" onclick="selectOption(this, 3, 5)">B. Rolling Tank</div>
+                        <div class="option" onclick="selectOption(this, 3, 5)">C. Catapult Ram</div>
+                        <div class="option" onclick="selectOption(this, 3, 5)">D. Beverage Robot</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">6. If you need a robot that can continue moving even after colliding with objects, which robot design is BEST suited?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 3, 6)">A. Robotic Ant</div>
+                        <div class="option" onclick="selectOption(this, 3, 6)">B. Robotic Arm Tank</div>
+                        <div class="option" onclick="selectOption(this, 3, 6)">C. Rolling Tank</div>
+                        <div class="option" onclick="selectOption(this, 3, 6)">D. Self-Balancing Robot</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">7. Which robot is MOST suitable for simulating animal-like movements using multiple legs?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 3, 7)">A. Robotic Ant</div>
+                        <div class="option" onclick="selectOption(this, 3, 7)">B. Self-Balancing Robot</div>
+                        <div class="option" onclick="selectOption(this, 3, 7)">C. Robotic Arm Tank</div>
+                        <div class="option" onclick="selectOption(this, 3, 7)">D. Catapult Ram</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">8. A student wants to build a robot that can launch lightweight objects at different directions during a science project. Which robot should they select?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 3, 8)">A. Rolling Tank</div>
+                        <div class="option" onclick="selectOption(this, 3, 8)">B. Catapult Ram</div>
+                        <div class="option" onclick="selectOption(this, 3, 8)">C. Robotic Ant</div>
+                        <div class="option" onclick="selectOption(this, 3, 8)">D. Camera Dolly</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">9. What is the function of the Main Controller in a robot?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 3, 9)">A. Provides mechanical movement to the robot's wheels</div>
+                        <div class="option" onclick="selectOption(this, 3, 9)">B. Stores energy to power the robot</div>
+                        <div class="option" onclick="selectOption(this, 3, 9)">C. Controls the entire processes of the robot and connects sensors and motors</div>
+                        <div class="option" onclick="selectOption(this, 3, 9)">D. Protects the robot from external damage</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question">10. Which part of the Ultimate 2.0 robot is responsible for detecting obstacles?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 3, 10)">A. Gyro Sensor</div>
+                        <div class="option" onclick="selectOption(this, 3, 10)">B. Ultrasonic Sensor</div>
+                        <div class="option" onclick="selectOption(this, 3, 10)">C. Line Follower</div>
+                        <div class="option" onclick="selectOption(this, 3, 10)">D. Gripper</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn" onclick="showPage(8)">BACK TO LESSON</button>
+                <button class="btn btn-secondary" id="quiz3-next" onclick="nextQuizQuestion(3)">NEXT QUESTION</button>
+                <button class="btn btn-accent" id="quiz3-submit" style="display:none" onclick="checkQuiz(3)">DEFEAT FINAL BOSS</button>
+            </div>
+            
+            <div class="completion-message" id="quiz3-complete">
+                <h2 id="quiz3-result">ULTIMATE VICTORY! ALL BOSSES DEFEATED!</h2>
+                <p id="quiz3-message">You've completed the entire RoboQuest adventure!</p>
+                
+                <div class="achievement" id="quiz3-achievement">
+                    <div class="achievement-icon">🏅</div>
+                    <div class="achievement-text">
+                        <div class="achievement-title">Robotics Master</div>
+                        <div>Completed all missions and defeated all bosses</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn" onclick="completeMission(3)">RETURN TO DASHBOARD</button>
+                    <button class="btn" onclick="showPage(8)" id="quiz3-retry" style="display:none">RETRY LESSON</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+// Game state
+const gameState = {
+    level: 1,
+    xp: 0,
+    xpToNextLevel: 100,
+    missionsCompleted: 0,
+    bossesDefeated: 0,
+    currentMission: 0,
+    currentSlide: {
+        1: 1,
+        2: 1,
+        3: 1
+    },
+    quizAnswers: {
+        1: {},
+        2: {},
+        3: {}
+    },
+    quizCompleted: {
+        1: false,
+        2: false,
+        3: false
+    },
+    selectedGrade: null
+};
+
+// Correct answers for each quiz - UPDATED WITH CORRECT ANSWERS
+const correctAnswers = {
+    1: {
+        1: "C. A programmable machine capable of executing tasks automatically with speed and precision",
+        2: "D. Static humans",
+        3: "B. They improve accuracy and reduce assembly time",
+        4: "C. PCB Assembly",
+        5: "C. Quality control and inspection",
+        6: "B. Operate continuously without fatigue",
+        7: "C. Analyze soil samples and search for signs of life",
+        8: "B. Developing programming, problem-solving, and engineering skills",
+        9: "C. Electronics",
+        10: "B. Replace the robot immediately with a backup unit"
+    },
+    2: {
+        1: "B. Power Supply",
+        2: "C. To detect environmental changes and send data to the CPU",
+        3: "B. Sensor → CPU → Actuator",
+        4: "B. CPU (Main Controller)",
+        5: "C. The CPU will not have instructions to process, so the robot will not work properly",
+        6: "B. Main Controller",
+        7: "C. Five senses",
+        8: "B. Main Controller",
+        9: "B. Power Supply", // CORRECTED: You confirmed this should be A
+        10: "B. To convert commands into real-world actions like movement, sound, and lights"
+    },
+    3: {
+        1: "B. Robotic Arm Tank",
+        2: "B. It pours liquid into a glass and delivers it",
+        3: "A. Camera Dolly",
+        4: "B. It rotates the object while keeping the camera stable",
+        5: "A. Detecting Robot",
+        6: "C. Rolling Tank",
+        7: "A. Robotic Ant",
+        8: "B. Catapult Ram",
+        9: "C. Controls the entire processes of the robot and connects sensors and motors",
+        10: "B. Ultrasonic Sensor"
+    }
+};
+
+// Initialize the game
+document.addEventListener('DOMContentLoaded', function() {
+    createStars();
+    updateGameStats();
+});
+
+// Create background stars
+function createStars() {
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 3 + 'px';
+        star.style.height = star.style.width;
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.opacity = Math.random() * 0.7 + 0.3;
+        star.style.animationDelay = Math.random() * 5 + 's';
+        starsContainer.appendChild(star);
+    }
+}
+
+// Update game statistics display
+function updateGameStats() {
+    document.getElementById('player-level').textContent = gameState.level;
+    document.getElementById('missions-completed').textContent = gameState.missionsCompleted;
+    document.getElementById('bosses-defeated').textContent = gameState.bossesDefeated;
+    
+    const xpPercentage = (gameState.xp / gameState.xpToNextLevel) * 100;
+    document.getElementById('player-xp').style.width = xpPercentage + '%';
+    document.getElementById('xp-text').textContent = gameState.xp + '/' + gameState.xpToNextLevel;
+    
+    // Show available missions
+    if (gameState.missionsCompleted >= 0) {
+        document.getElementById('mission2-btn').style.display = 'inline-block';
+    }
+    if (gameState.missionsCompleted >= 1) {
+        document.getElementById('mission3-btn').style.display = 'inline-block';
+    }
+}
+
+// Show specific page
+function showPage(pageNumber) {
+    // Hide all pages
+    const pages = document.getElementsByClassName('page');
+    for (let i = 0; i < pages.length; i++) {
+        pages[i].classList.remove('active');
+    }
+    
+    // Show selected page
+    document.getElementById('page' + pageNumber).classList.add('active');
+}
+
+// Select grade level
+function selectGrade(grade) {
+    if (grade === 7) {
+        gameState.selectedGrade = 7;
+        showPage(3); // Grade 7 Dashboard
+        document.getElementById('continue-btn').style.display = 'inline-block';
+    } else {
+        Swal.fire({
+            title: 'Coming Soon!',
+            text: 'Grade ' + grade + ' content is currently under development.',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+    }
+}
+
+// Start a mission
+function startMission(missionNumber) {
+    if (!gameState.selectedGrade) {
+        showPage(2); // Go to grade selection if no grade selected
+        return;
+    }
+    
+    gameState.currentMission = missionNumber;
+    // Missions: 1->page4, 2->page6, 3->page8
+    const pageNumber = missionNumber === 1 ? 4 : (missionNumber === 2 ? 6 : 8);
+    showPage(pageNumber);
+}
+
+// Change tab within a lesson
+function changeTab(missionNumber, slideNumber) {
+    // Calculate the correct page number for each mission
+    const pageNumber = missionNumber === 1 ? 4 : (missionNumber === 2 ? 6 : 8);
+    
+    const tabs = document.querySelectorAll('#page' + pageNumber + ' .tab');
+    const contents = document.querySelectorAll('#page' + pageNumber + ' .tab-content');
+    
+    // Remove active class from all tabs and contents
+    tabs.forEach(tab => tab.classList.remove('active'));
+    contents.forEach(content => content.classList.remove('active'));
+    
+    // Add active class to selected tab and content
+    if (tabs[slideNumber - 1]) tabs[slideNumber - 1].classList.add('active');
+    if (contents[slideNumber - 1]) contents[slideNumber - 1].classList.add('active');
+    
+    gameState.currentSlide[missionNumber] = slideNumber;
+    
+    // Update navigation buttons
+    updateNavigationButtons(missionNumber);
+}
+
+// Go to next slide
+function nextSlide(missionNumber) {
+    const totalSlides = missionNumber === 1 ? 8 : (missionNumber === 2 ? 7 : 16);
+    
+    if (gameState.currentSlide[missionNumber] < totalSlides) {
+        changeTab(missionNumber, gameState.currentSlide[missionNumber] + 1);
+    }
+}
+
+// Update navigation buttons based on current slide
+function updateNavigationButtons(missionNumber) {
+    const totalSlides = missionNumber === 1 ? 8 : (missionNumber === 2 ? 7 : 16);
+    const nextBtn = document.getElementById('next-btn' + missionNumber);
+    const bossBtn = document.getElementById('boss-btn' + missionNumber);
+    
+    if (gameState.currentSlide[missionNumber] === totalSlides) {
+        if (nextBtn) nextBtn.style.display = 'none';
+        if (bossBtn) bossBtn.style.display = 'inline-block';
+    } else {
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+        if (bossBtn) bossBtn.style.display = 'none';
+    }
+}
+
+// Start a boss battle (quiz)
+function startBossBattle(missionNumber) {
+    // Quizzes: 1->page5, 2->page7, 3->page9
+    const pageNumber = missionNumber === 1 ? 5 : (missionNumber === 2 ? 7 : 9);
+    showPage(pageNumber);
+    resetQuiz(missionNumber);
+}
+
+// Change quiz tab
+function changeQuizTab(quizNumber, questionNumber) {
+    // Calculate the correct page number for each quiz
+    const pageNumber = quizNumber === 1 ? 5 : (quizNumber === 2 ? 7 : 9);
+    
+    const tabs = document.querySelectorAll('#page' + pageNumber + ' .quiz-tab');
+    const contents = document.querySelectorAll('#page' + pageNumber + ' .quiz-content');
+    
+    // Remove active class from all tabs and contents
+    tabs.forEach(tab => tab.classList.remove('active'));
+    contents.forEach(content => content.classList.remove('active'));
+    
+    // Add active class to selected tab and content
+    if (tabs[questionNumber - 1]) tabs[questionNumber - 1].classList.add('active');
+    if (contents[questionNumber - 1]) contents[questionNumber - 1].classList.add('active');
+    
+    // Update progress
+    document.getElementById('quiz' + quizNumber + '-progress').textContent = 
+        'Question ' + questionNumber + ' of 10';
+    
+    // Update navigation buttons
+    updateQuizNavigation(quizNumber, questionNumber);
+}
+
+// Select an option in a quiz
+function selectOption(element, quizNumber, questionNumber) {
+    // Remove selected class from all options in this question
+    const options = element.parentElement.querySelectorAll('.option');
+    options.forEach(option => option.classList.remove('selected'));
+    
+    // Add selected class to clicked option
+    element.classList.add('selected');
+    
+    // Store the answer
+    gameState.quizAnswers[quizNumber][questionNumber] = element.textContent;
+    
+    // Update quiz navigation
+    updateQuizNavigation(quizNumber, questionNumber);
+}
+
+// Go to next quiz question
+function nextQuizQuestion(quizNumber) {
+    // Calculate the correct page number for each quiz
+    const pageNumber = quizNumber === 1 ? 5 : (quizNumber === 2 ? 7 : 9);
+    
+    const currentTab = document.querySelector('#page' + pageNumber + ' .quiz-tab.active');
+    const currentIndex = Array.from(currentTab.parentElement.children).indexOf(currentTab);
+    
+    if (currentIndex < 9) {
+        changeQuizTab(quizNumber, currentIndex + 2);
+    }
+}
+
+// Update quiz navigation buttons
+function updateQuizNavigation(quizNumber, questionNumber) {
+    const nextBtn = document.getElementById('quiz' + quizNumber + '-next');
+    const submitBtn = document.getElementById('quiz' + quizNumber + '-submit');
+    
+    if (questionNumber === 10) {
+        if (nextBtn) nextBtn.style.display = 'none';
+        if (submitBtn) submitBtn.style.display = 'inline-block';
+    } else {
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+        if (submitBtn) submitBtn.style.display = 'none';
+    }
+}
+
+// Check quiz answers and show results - WITH DEBUGGING
+function checkQuiz(quizNumber) {
+    let correctCount = 0;
+    const totalQuestions = 10;
+    const wrongQuestions = [];
+    
+    console.log("=== QUIZ " + quizNumber + " DEBUG ===");
+    console.log("User Answers:", gameState.quizAnswers[quizNumber]);
+    console.log("Correct Answers:", correctAnswers[quizNumber]);
+    
+    // Count correct answers and log each one
+    for (let i = 1; i <= totalQuestions; i++) {
+        const userAnswer = gameState.quizAnswers[quizNumber][i];
+        const correctAnswer = correctAnswers[quizNumber][i];
+        
+        // Detailed comparison
+        const isCorrect = userAnswer === correctAnswer;
+        const userLength = userAnswer ? userAnswer.length : 0;
+        const correctLength = correctAnswer ? correctAnswer.length : 0;
+        
+        console.log(`Q${i}:`);
+        console.log(`  User: "${userAnswer}" (length: ${userLength})`);
+        console.log(`  Correct: "${correctAnswer}" (length: ${correctLength})`);
+        console.log(`  Match: ${isCorrect ? "✓" : "✗"}`);
+        
+        if (userAnswer && correctAnswer && !isCorrect) {
+            // Check character by character
+            console.log(`  Character comparison:`);
+            const minLength = Math.min(userLength, correctLength);
+            for (let j = 0; j < minLength; j++) {
+                if (userAnswer[j] !== correctAnswer[j]) {
+                    console.log(`    Position ${j}: User='${userAnswer[j]}' (${userAnswer.charCodeAt(j)}) vs Correct='${correctAnswer[j]}' (${correctAnswer.charCodeAt(j)})`);
+                }
+            }
+        }
+        
+        if (isCorrect) {
+            correctCount++;
+        } else {
+            wrongQuestions.push(i);
+        }
+    }
+    
+    console.log("Total Correct:", correctCount + "/" + totalQuestions);
+    if (wrongQuestions.length > 0) {
+        console.log("Wrong questions:", wrongQuestions);
+    }
+    console.log("====================");
+    
+    // Calculate score and XP
+    const score = (correctCount / totalQuestions) * 100;
+    const xpEarned = Math.floor(score);
+    
+    // Update game state
+    if (score >= 70) { // Passing score is 70%
+        gameState.quizCompleted[quizNumber] = true;
+        gameState.bossesDefeated++;
+        gameState.xp += xpEarned;
+        
+        // Check for level up
+        while (gameState.xp >= gameState.xpToNextLevel) {
+            gameState.xp -= gameState.xpToNextLevel;
+            gameState.level++;
+            gameState.xpToNextLevel = Math.floor(gameState.xpToNextLevel * 1.5);
+            
+            // Show level up message
+            Swal.fire({
+                title: 'Level Up!',
+                text: 'You reached level ' + gameState.level + '!',
+                icon: 'success',
+                confirmButtonText: 'Awesome!'
+            });
+        }
+        
+        updateGameStats();
+        
+        // Show success message
+        document.getElementById('quiz' + quizNumber + '-result').textContent = 'VICTORY! BOSS DEFEATED!';
+        document.getElementById('quiz' + quizNumber + '-message').textContent = 
+            'You got ' + correctCount + ' out of 10 questions correct and earned ' + xpEarned + ' XP!';
+        document.getElementById('quiz' + quizNumber + '-retry').style.display = 'none';
+        
+        // Show SweetAlert with score and navigation
+        if (quizNumber < 3) {
+            Swal.fire({
+                title: 'Mission Complete!',
+                html: `You got <strong>${correctCount} out of 10</strong> questions correct and earned <strong>${xpEarned} XP</strong>!<br><br>Ready for the next mission?`,
+                icon: 'success',
+                confirmButtonText: 'Continue to Next Mission',
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Automatically start the next mission
+                    startMission(quizNumber + 1);
+                }
+            });
+        } else {
+            // Final mission completion
+            Swal.fire({
+                title: 'Congratulations!',
+                html: `You got <strong>${correctCount} out of 10</strong> questions correct and earned <strong>${xpEarned} XP</strong>!<br><br>You've completed all missions!`,
+                icon: 'success',
+                confirmButtonText: 'Return to Dashboard',
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showPage(3);
+                }
+            });
+        }
+    } else {
+        // Show failure message
+        document.getElementById('quiz' + quizNumber + '-result').textContent = 'BOSS DEFEATED YOU!';
+        document.getElementById('quiz' + quizNumber + '-message').textContent = 
+            'You got ' + correctCount + ' out of 10 questions correct. You need at least 7 correct answers to pass. Try again!';
+        document.getElementById('quiz' + quizNumber + '-retry').style.display = 'inline-block';
+        
+        // Show failure SweetAlert
+        Swal.fire({
+            title: 'Try Again!',
+            html: `You got <strong>${correctCount} out of 10</strong> questions correct. You need at least 7 correct answers to pass.`,
+            icon: 'error',
+            confirmButtonText: 'Retry Lesson'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Go back to the lesson - calculate correct lesson page
+                const lessonPage = quizNumber === 1 ? 4 : (quizNumber === 2 ? 6 : 8);
+                showPage(lessonPage);
+            }
+        });
+    }
+    
+    // Show completion message
+    document.getElementById('quiz' + quizNumber + '-complete').style.display = 'block';
+    
+    // Create confetti for victory
+    if (score >= 70) {
+        createConfetti();
+    }
+}
+
+// Reset quiz state
+function resetQuiz(quizNumber) {
+    gameState.quizAnswers[quizNumber] = {};
+    
+    // Calculate the correct page number for each quiz
+    const pageNumber = quizNumber === 1 ? 5 : (quizNumber === 2 ? 7 : 9);
+    
+    // Reset all selected options
+    const options = document.querySelectorAll('#page' + pageNumber + ' .option');
+    options.forEach(option => option.classList.remove('selected'));
+    
+    // Reset completion message
+    document.getElementById('quiz' + quizNumber + '-complete').style.display = 'none';
+    
+    // Start from first question
+    changeQuizTab(quizNumber, 1);
+}
+
+// Complete a mission (this function is now handled by the SweetAlert in checkQuiz)
+function completeMission(missionNumber) {
+    if (gameState.quizCompleted[missionNumber]) {
+        gameState.missionsCompleted++;
+        updateGameStats();
+        
+        // Show mission complete animation
+        showMissionCompleteAnimation();
+        
+        // Return to HQ after a delay
+        setTimeout(() => {
+            showPage(3);
+        }, 3000);
+    } else {
+        Swal.fire({
+            title: 'Mission Not Complete',
+            text: 'You need to defeat the boss first!',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+    }
+}
+
+// Show mission complete animation
+function showMissionCompleteAnimation() {
+    const animation = document.createElement('div');
+    animation.className = 'mission-complete-animation active';
+    animation.innerHTML = `
+        <div class="celebration-content">
+            <div class="celebration-robot">🎉</div>
+            <h2>Mission Complete!</h2>
+            <p>You've successfully completed the mission and earned rewards!</p>
+        </div>
+    `;
+    document.body.appendChild(animation);
+    
+    // Remove animation after 3 seconds
+    setTimeout(() => {
+        animation.remove();
+    }, 3000);
+    
+    // Create confetti
+    createConfetti();
+}
+
+// Create confetti animation
+function createConfetti() {
+    const colors = ['#6A89CC', '#F8C291', '#E55039', '#F6B93B', '#78E08F', '#D6A2E8', '#FDA7DF'];
+    
+    for (let i = 0; i < 150; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-10px';
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        confetti.style.width = Math.random() * 10 + 5 + 'px';
+        confetti.style.height = Math.random() * 10 + 5 + 'px';
+        
+        document.body.appendChild(confetti);
+        
+        // Animate confetti
+        const animation = confetti.animate([
+            { top: '-10px', transform: `rotate(0deg)` },
+            { top: '100vh', transform: `rotate(${Math.random() * 720}deg)` }
+        ], {
+            duration: Math.random() * 3000 + 2000,
+            easing: 'cubic-bezier(0.1, 0.2, 0.8, 0.9)'
+        });
+        
+        // Remove confetti after animation
+        animation.onfinish = () => confetti.remove();
+    }
+}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.error('SW register failed:', err));
+  });
+}
+</script>
+<script>
+let deferredPrompt;
+const installBtn = document.getElementById('install-btn'); // your UI button
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'block';
+});
+
+installBtn.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const choice = await deferredPrompt.userChoice;
+  console.log('User choice:', choice.outcome);
+  deferredPrompt = null;
+  installBtn.style.display = 'none';
+});
+</script>
+</body>
+</html>
