@@ -702,6 +702,13 @@
         }
     </style>
 </head>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js")
+    .then(() => console.log("Service Worker Registered"));
+}
+</script>
+
 <body>
     <div class="stars" id="stars"></div>
     
@@ -2490,3 +2497,4 @@ installBtn.addEventListener('click', async () => {
 </body>
 
 </html>
+
