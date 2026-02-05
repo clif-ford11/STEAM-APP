@@ -1,7 +1,7 @@
 {
   "name": "STEAM App",
   "short_name": "STEAM",
-  "start_url": "/steam-app/index.html",
+  "start_url": "/STEAM-APP/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0d6efd",
@@ -19,5 +19,6 @@
     }
   ]
 }
+
 
 
